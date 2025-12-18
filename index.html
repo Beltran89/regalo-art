@@ -7,9 +7,15 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<!-- LOADER INICIAL -->
+<div id="loader">
+  <div class="loader-content">
+    <div class="spinner"></div>
+    <p class="loader-title">🎁 Cargando tu regalo…</p>
+    <p class="loader-sub">Un poquito de magia está en camino ✨</p>
+  </div>
+</div>
 
-<!-- PAPÁ NOEL POR DELANTE DE TODO -->
-<div id="santa-container"></div>
 
 <!-- NIEVE -->
 <div id="snow-container"></div>
@@ -242,27 +248,7 @@ setInterval(createPaintDrop, 180);
 // frecuencia de gotas
 setInterval(createPaintDrop, 150);
 
-/* PAPÁ NOEL IZQUIERDA → DERECHA */
-const santaContainer = document.getElementById("santa-container");
 
-function createSanta() {
-    const santa = document.createElement("img");
-    santa.src = "papanoel.png";
-    santa.className = "santa-fly";
-
-    const startY = Math.random() * 80 + 10;
-    const endY = startY + (Math.random() * 40 - 20);
-
-    santa.style.setProperty("--start-y", startY + "vh");
-    santa.style.setProperty("--end-y", endY + "vh");
-    santa.style.animationDuration = Math.random() * 6 + 10 + "s";
-
-    santaContainer.appendChild(santa);
-
-    setTimeout(() => santa.remove(), 20000);
-}
-
-// setInterval(createSanta, 1000);
 
 let clickCount = 0;
 const maxTries = 5;
@@ -304,6 +290,18 @@ function showRiddle() {
 //     }, 2000);
 // }
 // }
+// LOADER INICIAL
+window.addEventListener("load", () => {
+    setTimeout(() => {
+        const loader = document.getElementById("loader");
+        if (loader) {
+            loader.classList.add("hidden");
+
+            // eliminar del DOM tras la animación
+            setTimeout(() => loader.remove(), 700);
+        }
+    }, 3000); // ⏱️ 3 segundos
+});
 </script>
 
 </body>
