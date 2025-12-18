@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Bon Nada 🎄</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- PAPÁ NOEL POR DELANTE DE TODO -->
+<div id="santa-container"></div>
+
+<!-- NIEVE -->
+<div id="snow-container"></div>
+
+<!-- MÚSICA -->
+<audio id="musica" loop>
+    <source src="musica.mp3" type="audio/mpeg">
+</audio>
+
+<!-- CONTENIDO -->
+<div class="contenido">
+    <p class="mensaje">
+        💕 Se que llevas una gran artista dentro, pero para descubrirlo, primero jugemos a un juego 💕
+        <br>👇Haz clic en el lienzo. Si lo consigues!!👇
+    </p>
+    <a  id="zapatilla" style="color:black;" href="https://www.skechers.es" class="zapatilla">
+    <img src="lienzo.png" alt="Zapatilla Skechers">
+    <!-- <h1>✨ Cíclame ✨</h1> -->
+
+    <!-- <a id="zapatilla" style="color:black;"  href="https://www.skechers.es" class="zapatilla"> -->
+</a>
+</div>
+<!-- POPUP SIMPLE -->
+<div id="popup-msg" class="popup hidden">
+  <div class="popup-content">
+    <p id="popup-msg-text"></p>
+  </div>
+</div>
+
+<!-- POPUP ACERTIJO -->
+<div id="popup-riddle" class="popup hidden">
+  <div class="popup-content">
+    <p>¿Cómo se dice en catalán “te quiero”?</p>
+    <input id="answer" placeholder="Escribe aquí">
+    <button id="check-btn">Comprobar</button>
+  </div>
+</div>
+<div id="confetti-container"></div>
+<script>
+// ===============================
+// JUEGO DEL CLIC (ESTE ES EL BLOQUE CLAVE)
+// ===============================
+
+
+const maxClicks = 5;
+const finalLink = "https://www.art-bonaestona.com/";
+
+const zapatilla = document.getElementById("zapatilla");
+
+// popup simple
+const popupMsg = document.getElementById("popup-msg");
+const popupMsgText = document.getElementById("popup-msg-text");
+
+// popup acertijo
+const popupRiddle = document.getElementById("popup-riddle");
+const answerInput = document.getElementById("answer");
+const checkBtn = document.getElementById("check-btn");
+
+zapatilla.addEventListener("click", function (e) {
+    e.preventDefault(); // ⛔ evita ir al link
+
+    clickCount++;
+
+    if (clickCount < maxClicks) {
+        moverZapatilla();
+        mostrarMensaje("Prueba otra vez 😜");
+    } else {
+        mostrarAcertijo();
+    }
+});
+
+function moverZapatilla() {
+    const padding = 20; // margen de seguridad
+    const rect = zapatilla.getBoundingClientRect();
+
+    const maxX = window.innerWidth - rect.width - padding;
+    const maxY = window.innerHeight - rect.height - padding;
+
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+
+    zapatilla.style.left = x + "px";
+    zapatilla.style.top = y + "px";
+}
+
+function mostrarMensaje(texto) {
+    popupMsgText.textContent = texto;
+    popupMsg.classList.remove("hidden");
+
+    setTimeout(() => {
+        popupMsg.classList.add("hidden");
+    }, 1000);
+}
+
+function mostrarAcertijo() {
+    popupRiddle.classList.remove("hidden");
+}
+function eliminarCheckBtn() {
+    const btn = document.getElementById("check-btn");
+    if (btn) {
+        btn.remove();
+    }
+}
+function eliminarTxt() {
+    const btn = document.getElementById("answer");
+    if (btn) {
+        btn.remove();
+    }
+}
+checkBtn.addEventListener("click", function () {
+    const valor = answerInput.value.trim().toLowerCase();
+
+    if (valor === "t'estimo" || valor === "testimo") {
+        eliminarCheckBtn();
+        eliminarTxt();
+        popupRiddle.querySelector("p").textContent = "Correcto ❤️  Ahora solo nos falta elegir el dia y la hora";
+
+        lanzarConfeti(); // 🎉 CONFETI
+        setTimeout(() => {
+            window.location.href = finalLink;
+        }, 2000);
+    }
+});
+// CONFETI
+const confettiContainer = document.getElementById("confetti-container");
+
+function lanzarConfeti() {
+    console.log("CONFETI LANZADO");
+    const colors = [
+        "#ff4757", "#1e90ff", "#2ed573",
+        "#ffa502", "#9b59b6", "#feca57"
+    ];
+
+    for (let i = 0; i < 120; i++) {
+        const confetti = document.createElement("div");
+        confetti.className = "confetti";
+
+        confetti.style.left = Math.random() * 100 + "vw";
+        confetti.style.backgroundColor =
+            colors[Math.floor(Math.random() * colors.length)];
+
+        confetti.style.animationDuration =
+            Math.random() * 2 + 2 + "s";
+
+        confettiContainer.appendChild(confetti);
+
+        setTimeout(() => confetti.remove(), 4000);
+    }
+}
+/* ACTIVAR MÚSICA EN IPHONE */
+document.body.addEventListener("click", () => {
+    document.getElementById("musica").play();
+}, { once: true });
+
+function vibrar() {
+    if (navigator.vibrate) navigator.vibrate(80);
+}
+
+/* GOTAS */
+const container = document.getElementById("snow-container");
+
+const colors = [
+    "#ff4757",
+    "#1e90ff",
+    "#2ed573",
+    "#ffa502",
+    "#9b59b6",
+    "#feca57"
+];
+
+function createSplash(x, y, color) {
+    for (let i = 0; i < 20; i++) { // antes 6 → ahora 20
+        const splash = document.createElement("div");
+        splash.className = "splash";
+        splash.style.left = x + "px";
+        splash.style.top = y + "px";
+        splash.style.backgroundColor = color;
+
+        // EXPANSIÓN MUCHO MAYOR
+        splash.style.setProperty(
+            "--dx",
+            (Math.random() * 300 - 150) + "px"
+        );
+        splash.style.setProperty(
+            "--dy",
+            (Math.random() * 300 - 150) + "px"
+        );
+
+        container.appendChild(splash);
+
+        setTimeout(() => splash.remove(), 800);
+    }
+}
+
+function createPaintDrop() {
+    const isHeart = Math.random() < 0.15; // 15% corazones
+    const color = colors[Math.floor(Math.random() * colors.length)];
+
+    let drop;
+
+    if (isHeart) {
+        drop = document.createElement("div");
+        drop.className = "paint-heart";
+        drop.innerHTML = "❤️";
+        drop.style.color = color;
+    } else {
+        drop = document.createElement("div");
+        drop.className = "paint-drop";
+        drop.style.color = color;
+        const size = Math.random() * 12 + 10;
+        drop.style.width = size + "px";
+        drop.style.height = size * 1.4 + "px";
+    }
+
+    drop.style.left = Math.random() * 100 + "vw";
+    drop.style.animationDuration = Math.random() * 6 + 6 + "s";
+
+    container.appendChild(drop);
+
+    drop.addEventListener("animationend", () => {
+        const rect = drop.getBoundingClientRect();
+        createSplash(rect.left, window.innerHeight - 10, color);
+        drop.remove();
+    });
+}
+
+// frecuencia
+setInterval(createPaintDrop, 180);
+
+// frecuencia de gotas
+setInterval(createPaintDrop, 150);
+
+/* PAPÁ NOEL IZQUIERDA → DERECHA */
+const santaContainer = document.getElementById("santa-container");
+
+function createSanta() {
+    const santa = document.createElement("img");
+    santa.src = "papanoel.png";
+    santa.className = "santa-fly";
+
+    const startY = Math.random() * 80 + 10;
+    const endY = startY + (Math.random() * 40 - 20);
+
+    santa.style.setProperty("--start-y", startY + "vh");
+    santa.style.setProperty("--end-y", endY + "vh");
+    santa.style.animationDuration = Math.random() * 6 + 10 + "s";
+
+    santaContainer.appendChild(santa);
+
+    setTimeout(() => santa.remove(), 20000);
+}
+
+setInterval(createSanta, 1000);
+
+let clickCount = 0;
+const maxTries = 5;
+const link = "https://www.art-bonaestona.com/";
+
+
+const popup = document.getElementById("popup");
+const popupText = document.getElementById("popup-text");
+const popupBtn = document.getElementById("popup-btn");
+
+
+
+function moveZapatilla() {
+    const x = Math.random() * 60 - 30;
+    const y = Math.random() * 60 - 30;
+    zapatilla.style.transform = `translate(${x}vw, ${y}vh)`;
+}
+
+
+function showRiddle() {
+    popup.classList.remove("hidden");
+    popupText.textContent = "¿Cómo se dice en catalán “te quiero”?";
+    answerInput.classList.remove("hidden");
+    popupBtn.classList.remove("hidden");
+
+    popupBtn.onclick = checkAnswer;
+}
+
+// function checkAnswer() {
+//     const value = answerInput.value.trim().toLowerCase();
+
+//     if (valor === "t'estimo" || valor === "testimo") {
+//     document.getElementById("riddle-text").textContent = "Correcto ❤️";
+
+    
+
+//     setTimeout(() => {
+//         window.location.href = finalLink;
+//     }, 2000);
+// }
+// }
+</script>
+
+</body>
+</html>
